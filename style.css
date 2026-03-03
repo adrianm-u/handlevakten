@@ -1,0 +1,272 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    font-family: Raleway, sans-serif;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    inset: 0px;
+    width: 7%;
+    border: 1px solid black;
+    background-color: #02734A;
+}
+
+#logo {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    top: 0px;
+    width: 100%;
+    border-bottom: 1px solid black;
+}
+
+#logo a {
+    text-align: center;
+    font-size: 0.4rem;
+    text-decoration: none;
+}
+
+#logo img {
+    width: auto;
+    height: 50px;
+    margin: 5px;
+}
+
+#logo h1 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+nav ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    list-style: none;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+nav ul a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    padding: 5px;
+}
+
+
+nav ul img {
+    width: auto;
+    height: 40px;
+}
+
+nav ul h1 {
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 200;
+    margin: 5px;
+
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin-left: 7%;
+    width: calc(93%-10px);
+    padding: 10px;
+}
+
+aside a {
+    text-decoration: none;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+#search_box {
+    margin: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.banner {
+    display: flex;
+    justify-content: center;
+}
+
+.banner img {
+    height: auto;
+    max-width: 100%;
+}
+
+.article-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    background-color: #E6F2ED;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.article-box article {
+    max-width: 450px;
+    flex: 1 1 280px;
+    position: relative;
+    background-color: lightgray;
+    padding: 10px;
+    margin: 5px;
+}
+
+.article-box a {
+    text-decoration: none;
+}
+
+.article-box img {
+    width: 100%;
+    height: 200px;
+    aspect-ratio: 1/2;
+    object-fit: contain;
+    background-color: white;
+    border: 2px solid gray;
+}
+
+footer {
+    position: relative;
+    margin-left: 10%;
+    margin-top: auto;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: center;
+    height: 100px;
+    width: 90%;
+    border-top: 2px solid #02734A;
+    padding-top: 20px;
+}
+
+#current-shoppinglist {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: auto;
+    color:#02734A;
+}
+
+.shoppinglist-table {
+    background-color: white;
+    border: 2px solid gray;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 15px auto;
+    font-size: 1rem;
+    color: solid black;
+}
+
+.shoppinglist-table th {
+    border: 1px solid gray;
+    padding: 10px;
+    background-color: #02734A;
+    color: #ffffff;
+    text-align: center;
+}
+
+.shoppinglist-table td {
+    border: 1px solid gray;
+    padding: 5px;
+    text-align: center;
+}
+
+.shoppinglist-table button {
+    background-color: #02734A;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.shoppinglist-table button:hover {
+    background-color: #015a38;
+}
+
+.profile-content h2 {
+    color: #02734A;
+    font-size: 2rem;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #02734A;
+    padding-bottom: 10px;
+    padding-top: 10px
+}
+
+.profile-content p {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: black;
+}
+
+.profile-content button {
+    background-color: #02734A;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.profile-content button:hover {
+    background-color: #015a38;
+}
+
+.profile-content ul {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.profile-content li {
+    padding: 5px;
+    font-size: 1rem;
+    color: black;
+}
+

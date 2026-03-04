@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="content shoppinglist">
+
+    <h2 id="current-shoppinglist">Handleliste</h2>
+    <table class="shoppinglist-table"> <!-- Tabell med produkter i
+                handleliste/ønskeliste, med knapper for å endre antall. -->
+        <thead>
+            <tr>
+                <th>Produktnavn</th>
+                <th>Antall</th>
+                <th>Pris</th>
+                <th>Endre antall</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Meierismør 500g Tine</td>
+                <td>1</td>
+                <td>Laveste pris: 67.90 kr</td>
+                <td><button>+1</button><button>-1</button></td>
+            </tr>
+            <tr>
+                <td>Kjøttdeig 400g Gilde</td>
+                <td>2</td>
+                <td>Laveste pris: 159,80 kr</td>
+                <td><button>+1</button><button>-1</button></td>
+            </tr>
+            <tr>
+                <td>Karbonader 2x100g Meny</td>
+                <td>1</td>
+                <td>Laveste pris: 56.90 kr</td>
+                <td><button>+1</button><button>-1</button></td>
+            </tr>
+            <tr>
+                <td><strong>For hele handlelisten:</strong></td>
+                <td></td>
+                <td><strong>284,60 kr</strong></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</main>
+{% endblock %}

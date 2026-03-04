@@ -19,6 +19,8 @@ CREATE TABLE products (
     product_id INT AUTO_INCREMENT PRIMARY KEY,
     product_name VARCHAR(100) NOT NULL,
     category_id INT NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
+    description VARCHAR(255),
     FOREIGN KEY (category_id)
         REFERENCES categories (category_id)
         ON DELETE RESTRICT

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="content main">
+    <div id="search_box"> <!-- Søkefelt -->
+        <form method="get">
+            <input id="search" type="text" name="search" placeholder="Søk etter produkter...">
+            <button id="search_button" type="submit">Søk</button>
+        </form>
+    </div>
+    <div class="content_container">
+        <div class="banner">
+            <img src="static/images/black_friday_horizontal_background_01.jpg" alt="Main Page Banner">
+        </div>
+        <div class="article-box"> <!-- Produkter som vises på forsiden -->
+            {% for product in products %}
+            <article>
+                <a href="product_page_meierismor.html">
+                    <img src={{ product.image_url }}>
+                    <h3>
+                        {{ product.product_name }}
+                    </h3>
+                    <p>
+                        {% for entry in product.prices_at_store %}
+                        {{ entry.price }} kr hos {{ entry.store_name }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                </a>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+{% endblock %}

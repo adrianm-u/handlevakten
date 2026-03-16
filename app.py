@@ -46,6 +46,7 @@ def index():
         for (product_id, product_name, image_url, price, store_name) in cur:
             if product_id not in products:
                 products[product_id] = {
+                    "product_id": product_id,
                     "product_name": product_name,
                     "image_url": image_url,
                     "prices_at_store": [{

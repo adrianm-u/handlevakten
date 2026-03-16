@@ -20,22 +20,29 @@
             <nav> <!-- Navigasjon til andre sider -->
                 <ul>
                     <li>
-                        <a href="templates/index.html">
+                        <a href={{ url_for('index') }}>
                             <img src="static/images/home.png" alt="">
                             <h1>Forside</h1>
                         </a>
                     </li>
                     <li>
 
-                        <a href="templates/shoppinglist.html">
+                        <a href=>
                             <img src="static/images/heart.png" alt="">
-                            <h1>Handleliste</h1>
+                            <h1>Ønskeliste</h1>
                         </a>
                     </li>
                     <li>
-                        <a href="templates/profile_page.html">
+                        <a href={{ url_for('view_profile') }}>
                             <img src="static/images/user.png" alt="">
-                            <h1>Min profil</h1>
+                            <h1>
+                                {% if "username" in session %}
+                                Hei {{ session["username"] }}!<br>
+                                <a href={{ url_for('logout') }}>Logout</a>
+                                {% else %}
+                                Min profil
+                                {% endif %}
+                            </h1>
                         </a>
                     </li>
                 </ul>

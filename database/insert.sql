@@ -1,12 +1,11 @@
 USE handlevaktenDB;
 
+-- passord for brukere er fornavn + 123, e.g. admin123, karl123
+INSERT INTO users (email, password_hash, first_name, last_name, account_type) VALUES
+('admin@handlevakten.no', 'scrypt:32768:8:1$dXFexsvvFn1OHaem$01b24f78e53740694c9cc98fd761ed538d2eb66cf9d30d221b6d08582e227a1e51aaef7ed5a28a615b86b88fa44189375914ca93878fb328f3457a776106d0cb', 'Admin', 'Bruker', 'admin'), 
+('karl@epost.no', 'scrypt:32768:8:1$X6AiQlJidTMbZBY2$3d5d7b164ed749c901f0162da3894e289f106eff841e53d7be88d568148b956c9e03c11d58ea574c9bc43a3d213699dc2b8d1946d45c218b5b823e7c5c42d6ed', 'Karl', 'Knutsen', 'user'),
+('celina@epost.no', 'scrypt:32768:8:1$HB742oMG8CJ4jo4Y$ef8440b05dddcbc01911359467b71e521dd5610b31281371c58aa90dbc0892c3e2da2c54cde7e4fd2a7b9b24f34efcba609cd2aed437d4c5b7187ce47090e621', 'Celina', 'Oftedal', 'user');
 
-INSERT INTO users (email, first_name, last_name, account_type) VALUES
-('admin@handlevakten.no', 'Admin', 'Bruker', 'admin'),
-('karl@epost.no', 'Karl', 'Knutsen', 'user'),
-('celina@epost.no', 'Celina', 'Oftedal', 'user'),
-('ragnar@epost.no', 'Ragnar', 'Olsen', 'user'),
-('kenneth@epost.no', 'Kenneth', 'Pedersen', 'user');
 
 INSERT INTO categories (category_name) VALUES
 ('Meieri'),
@@ -16,7 +15,7 @@ INSERT INTO categories (category_name) VALUES
 ('Kjøtt'),
 ('Fisk');
 
-INSERT INTO products (product_name, category_id) VALUES
+INSERT INTO products (product_name, category_id, image_url, description) VALUES
 ('Meierismør 500g TINE', 1, 'static/images/tine_meierismor.jpg', 'TINE Meierismør er kjernet av fersk fløte.'),
 ('Kjøttdeig 400g Gilde', 2, 'static/images/gilde_kjottdeig.jpg', 'Gilde Kjøttdeig er laget av norsk storfekjøtt.'),
 ('Karbonader 2x100g Meny', 3, 'static/images/meny_karbonader.jpg', 'Meny Karbonader er laget av norsk storfekjøtt.'),
@@ -63,8 +62,8 @@ INSERT INTO wishlist (user_id, wishlist_name) VALUES
 (2, 'Handleliste helg'),
 (2, 'Fredagstaco'),
 (3, 'Sunnere alternativer'),
-(4, 'Studentbudsjett'),
-(5, 'Protein');
+(1, 'Studentbudsjett'),
+(2, 'Protein');
 
 INSERT INTO wishlist_items (wishlist_id, product_id) VALUES
 (1, 1),
@@ -92,5 +91,5 @@ INSERT INTO product_allergens (product_id, allergen_id) VALUES
 (1, 1),
 (2, 1),
 (3, 2),
-(4, 5),
+(4, 1),
 (5, 2);

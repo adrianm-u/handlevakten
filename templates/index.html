@@ -15,7 +15,7 @@
         <div class="article-box"> <!-- Produkter som vises på forsiden -->
             {% for product in products %}
             <article>
-                <a href="product_page_meierismor.html">
+                <a href="{{ url_for('product_page') }}?id={{ product.product_id }}">
                     <img src={{ product.image_url }}>
                     <h3>
                         {{ product.product_name }}

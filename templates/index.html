@@ -12,7 +12,7 @@
         <div class="banner">
             <img src="static/images/black_friday_horizontal_background_01.jpg" alt="Main Page Banner">
         </div>
-        <div class="article-box"> <!-- Produkter som vises på forsiden -->
+        <div id="article-box"> <!-- Produkter som vises på forsiden -->
             {% for product in products %}
             <article>
                 <a href="{{ url_for('product_page') }}?id={{ product.product_id }}">
@@ -31,4 +31,8 @@
         </div>
     </div>
 </main>
+<!--render product list so the external js-file can access it -->
+<script id="products-data" type="application/json">{{ products | tojson }}</script>
+<!-- Loading js after the page was loaded is preferred for performance-->
+<script src="{{ url_for('static', filename='js/searchbar.js') }}"></script>
 {% endblock %}

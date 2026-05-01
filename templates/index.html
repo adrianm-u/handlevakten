@@ -5,7 +5,15 @@
     <div id="search_box"> <!-- Søkefelt -->
         <form method="get">
             <input id="search" type="text" name="search" placeholder="Søk etter produkter...">
-            <button id="search_button" type="submit">Søk</button>
+
+            <select id="sort">
+                <option value="name_asc">Navn (A-Å)</option>
+                <option value="name_desc">Navn (Å-A)</option>
+                <option value="price_asc">Pris (lav-høy)</option>
+                <option value="price_desc">Pris (høy-lav)</option>
+
+                <p id="current_sort"></p>
+            </select>
         </form>
     </div>
     <div class="content_container">

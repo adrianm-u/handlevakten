@@ -17,19 +17,18 @@ CREATE TABLE categories (
 );
 
 CREATE TABLE products (
-    product_id INT AUTO_INCREMENT PRIMARY KEY,
-    product_name VARCHAR(100) NOT NULL,
-    category_id INT NOT NULL,
-    image_url VARCHAR(255) NOT NULL,
-    description VARCHAR(255),
-    FOREIGN KEY (category_id)
-        REFERENCES categories (category_id)
-        ON DELETE RESTRICT
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(255) NOT NULL,
+    image_url VARCHAR(255),
+    description TEXT,
+    updated_at DATETIME
 );
 
 CREATE TABLE stores (
     store_id INT AUTO_INCREMENT PRIMARY KEY,
-    store_name VARCHAR(100) NOT NULL
+    store_name VARCHAR(100) NOT NULL,
+    store_code VARCHAR(100) NOT NULL,
+    store_logo VARCHAR(255)
 );
 
 CREATE TABLE prices (

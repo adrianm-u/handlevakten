@@ -1,6 +1,7 @@
 from flask import Flask, render_template, g, request, session, flash, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 import mysql.connector
+import requests
 
 app = Flask(__name__)
 
@@ -19,7 +20,6 @@ def get_db():
                                        password=app.config["DATABASE_PASSWORD"], database=app.config["DATABASE_DB"])
     return g._database
 
-
 @app.teardown_appcontext
 def teardown_db(error):
     """Closes the database at the end of the request."""
@@ -27,6 +27,95 @@ def teardown_db(error):
     if db is not None:
         print("close connection")
         db.close()
+
+@app.cli.command("sync-products")
+def cli_sync():
+    """Flask CLI command for starting the products synchronization from the terminal."""
+    sync_products_from_api()
+
+def sync_products_from_api():
+    """Fetches paginated product data from the Kassal API and stores it in the local database,
+    updating existing rows when the same product already exists."""
+    db = get_db()
+    cur = db.cursor(buffered=True)
+
+    api_url = f"https://kassal.app/api/v1/products?size=100"
+    params = {"size": 100, "page": 1}
+    # Bearer token authentication
+    token = "bM1N0OzcN6s6ffUxw7L057n8ZmmnXCTpX5xd6CP3"
+    headers = { # optional parameter to request.get()
+        "Authorization": f"Bearer {token}",
+    }
+    while api_url:
+        # API call
+        response = requests.get(api_url, headers=headers, params=params, timeout=5)
+        if response.status_code in (500, 502, 503, 504):
+            print(f"Skipping page {params['page']} due to server error {response.status_code}")
+            params["page"] += 1
+            continue
+        response.raise_for_status() # raise error is status code != 200
+
+        payload = response.json()
+        products = payload["data"]
+
+        if not products:
+            break
+
+        for product in products:
+            # sync products table
+            sql1 = """
+            INSERT INTO products (product_id, product_name, image_url, description, updated_at)
+            VALUES (%s, %s, %s, %s, NOW())
+            ON DUPLICATE KEY UPDATE
+                product_name = VALUES(product_name),
+                image_url = VALUES(image_url), 
+                description = VALUES(description), 
+                updated_at = NOW()
+            """
+            cur.execute(sql1, (
+                product['id'],
+                product['name'],
+                product['image'],
+                product['description']
+            ))
+
+            # sync stores table
+            cur.execute( """
+            INSERT INTO stores (store_name, store_code, store_logo)
+            VALUES (%s, %s, %s)
+            ON DUPLICATE KEY UPDATE
+                store_name = VALUES(store_name),
+                store_code = VALUES(store_code),
+                store_logo = VALUES(store_logo)
+            """, (
+                product['store']['name'],
+                product['store']['code'],
+                product['store']['logo']
+            ))
+
+            # sync prices table
+            cur.execute(
+                "SELECT store_id FROM stores WHERE store_code = %s",
+                (product['store']['code'],)
+            )
+            store_id = cur.fetchone()[0]
+            cur.execute("""
+            INSERT INTO prices (product_id, store_id, price)
+            VALUES (%s, %s, %s)
+            ON DUPLICATE KEY UPDATE
+                product_id = VALUES(product_id),
+                store_id = VALUES(store_id),
+                price = VALUES(price)
+            """, (
+                product['id'],
+                store_id,
+                product['current_price']
+            ))
+
+        db.commit()
+        params["page"] += 1
+
+    cur.close()
 
 
 @app.route('/')
@@ -244,6 +333,25 @@ def logout():
     if "user_id" in session:
         session.pop("user_id")
     return redirect(url_for("index"))
+
+@app.route("/products")
+def products():
+    api_url = "https://kassal.app/api/v1/products?size=100"
+
+    # Bearer token authentication
+    token = "bM1N0OzcN6s6ffUxw7L057n8ZmmnXCTpX5xd6CP3"
+    headers = { # optional parameter to request.get()
+        "Authorization": f"Bearer {token}",
+    }
+
+    # API call
+    response = requests.get(api_url, headers=headers, timeout=5)
+    response.raise_for_status() # raise error is status code != 200
+
+    products = response.json()["data"]
+
+    return render_template("index.html", products=products, username=session.get("username"))
+
 
 if __name__ == "__main__":
     app.run()

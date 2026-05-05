@@ -38,23 +38,23 @@ function showProducts() {
 function getVisibleProducts() {
     let products = [];
     for (let i = 0; i < allProducts.length; i++) {
-        productLowercase = allProducts[i].product_name.toLowerCase();
+        productLowercase = allProducts[i].name.toLowerCase();
         if (productLowercase.indexOf(searchTerm) > -1) { // searches for a substring in a string, return -1 if not present
             products.push(allProducts[i]);
         }
     }
 
     if (sortType == "name_asc") {
-        products.sort((a, b) => a.product_name.localeCompare(b.product_name));
+        products.sort((a, b) => a.name.localeCompare(b.name));
     }
     else if (sortType == "name_desc") {
-        products.sort((a, b) => b.product_name.localeCompare(a.product_name));
+        products.sort((a, b) => b.name.localeCompare(a.name));
     }
     else if (sortType == "price_asc") {
-        products.sort((a, b) => a.prices_at_store[0].price - b.prices_at_store[0].price);
+        products.sort((a, b) => a.current_price - b.current_price);
     }
     else if (sortType == "price_desc") {
-        products.sort((a, b) => b.prices_at_store[0].price - a.prices_at_store[0].price);
+        products.sort((a, b) => b.current_price - a.current_price);
     }
     return products;
 }
@@ -63,18 +63,18 @@ function createArticleElement(product) {
     let article = document.createElement("article");
 
     let a = document.createElement("a");
-    a.href = `/product_page?id=${product.product_id}`;
+    a.href = `/product_page?id=${product.id}`;
 
     let img = document.createElement("img");
-    img.src = `${product.image_url}`;
+    img.src = `${product.image}`;
 
     let h3 = document.createElement("h3");
-    h3.innerText = `${product.product_name}`;
+    h3.innerText = `${product.name}`;
 
     let p = document.createElement("p");
-    let priceText = product.prices_at_store
-        .map(p => `${p.price} kr hos ${p.store_name}`) // loops over each item and converts it into a string
-        .join(", "); // combines all strings into a line separated by commas
+    let priceText = product.current_price;
+    //.map(p => `${p.price} kr hos ${p.store_name}`) // loops over each item and converts it into a string
+    //.join(", "); // combines all strings into a line separated by commas
     p.innerHTML = priceText;
 
     a.appendChild(img);

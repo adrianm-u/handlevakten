@@ -38,9 +38,13 @@
             {% endfor %}
         </div>
     </div>
+    <div>
+        <button id="loadMoreProducts">Load more</button>
+    </div>
 </main>
 <!--render product list so the external js-file can access it -->
 <script id="products-data" type="application/json">{{ products | tojson }}</script>
 <!-- Loading js after the page was loaded is preferred for performance-->
 <script src="{{ url_for('static', filename='js/searchbar.js') }}"></script>
+<script src="{{ url_for('static', filename='js/load_more_products.js') }}"></script>
 {% endblock %}

@@ -63,7 +63,8 @@ def sync_products_from_api():
 
         for product in products:
             # sync products table
-            sql1 = """
+            cur.execute(
+            """
             INSERT INTO products (product_id, product_name, image_url, description, updated_at)
             VALUES (%s, %s, %s, %s, NOW())
             ON DUPLICATE KEY UPDATE
@@ -71,8 +72,7 @@ def sync_products_from_api():
                 image_url = VALUES(image_url), 
                 description = VALUES(description), 
                 updated_at = NOW()
-            """
-            cur.execute(sql1, (
+            """,  (
                 product['id'],
                 product['name'],
                 product['image'],
@@ -80,7 +80,8 @@ def sync_products_from_api():
             ))
 
             # sync stores table
-            cur.execute( """
+            cur.execute(
+            """
             INSERT INTO stores (store_name, store_code, store_logo)
             VALUES (%s, %s, %s)
             ON DUPLICATE KEY UPDATE
@@ -94,8 +95,7 @@ def sync_products_from_api():
             ))
 
             # sync prices table
-            cur.execute(
-                "SELECT store_id FROM stores WHERE store_code = %s",
+            cur.execute( "SELECT store_id FROM stores WHERE store_code = %s",
                 (product['store']['code'],)
             )
             store_id = cur.fetchone()[0]
@@ -119,18 +119,31 @@ def sync_products_from_api():
 
 
 @app.route('/')
-def index():
+def products():
     db = get_db()
     cur = db.cursor()
     try: 
-        # henter produktene fra databasen
-        products = {}
-        sql = "SELECT p.product_id, p.product_name, p.image_url, pr.price, s.store_name " \
-        " FROM products p " \
-        " JOIN prices pr ON p.product_id = pr.product_id " \
-        " JOIN stores s ON pr.store_id = s.store_id"
+        # Query the first 20 unique product ids from the database
+        offset = 0
+        limit = 20
+        cur.execute(
+        """ SELECT product_id
+            FROM products
+            ORDER BY product_id ASC
+            LIMIT %s OFFSET %s """, (limit, offset))
+        rows = cur.fetchall()
+        product_ids = [row[0] for row in rows]
 
-        cur.execute(sql)
+        # retrieve product info based on product id
+        products = {}
+        placeholders = ", ".join(["%s"] * len(product_ids))
+        cur.execute(
+        f""" SELECT p.product_id, p.product_name, p.image_url, pr.price, s.store_name 
+            FROM products p 
+            JOIN prices pr ON p.product_id = pr.product_id 
+            JOIN stores s ON pr.store_id = s.store_id
+            WHERE p.product_id IN ({placeholders})""", (product_ids)
+        )
 
         for (product_id, product_name, image_url, price, store_name) in cur:
             if product_id not in products:
@@ -149,12 +162,69 @@ def index():
                 })
 
         products_list = list(products.values())
-        return render_template("index.html", products=products_list, username=session.get("username", None))
+        return render_template("products.html", products=products_list, username=session.get("username", None))
     except mysql.connector.Error as err:
         print(err)
         return render_template("error.html", msg="Error querying data")
     finally:
         cur.close()
+
+@app.route('/api/products')
+def api_products():
+    """
+    Return a paginated batch of products as JSON.
+
+    Query parameters:
+        offset(int):
+            Number of products to skip before returning results.
+    
+    Response: 
+        A JSON array of product objects.
+    """
+    offset = request.args.get("offset", type=int)
+    limit = 20
+
+    cur = get_db().cursor()
+
+    cur.execute(
+    """ SELECT product_id
+        FROM products
+        ORDER BY product_id ASC
+        LIMIT %s OFFSET %s """, (limit, offset))
+    rows = cur.fetchall()
+    product_ids = [row[0] for row in rows]
+
+    # retrieve product info based on product id
+    products = {}
+    placeholders = ", ".join(["%s"] * len(product_ids))
+    cur.execute(
+    f""" SELECT p.product_id, p.product_name, p.image_url, pr.price, s.store_name 
+        FROM products p 
+        JOIN prices pr ON p.product_id = pr.product_id 
+        JOIN stores s ON pr.store_id = s.store_id
+        WHERE p.product_id IN ({placeholders})""", (product_ids)
+    )
+
+    for (product_id, product_name, image_url, price, store_name) in cur:
+        if product_id not in products:
+            products[product_id] = {
+                "product_id": product_id,
+                "product_name": product_name,
+                "image_url": image_url,
+                "prices_at_store": [{
+                    "store_name":  store_name,
+                    "price": price}],
+            }
+        else:
+            products[product_id]["prices_at_store"].append({
+                "store_name": store_name,
+                "price": price
+            })
+
+    products_list = list(products.values())
+
+    return products_list
+
 
 @app.route('/product_page')
 def product_page():
@@ -333,25 +403,6 @@ def logout():
     if "user_id" in session:
         session.pop("user_id")
     return redirect(url_for("index"))
-
-@app.route("/products")
-def products():
-    api_url = "https://kassal.app/api/v1/products?size=100"
-
-    # Bearer token authentication
-    token = "bM1N0OzcN6s6ffUxw7L057n8ZmmnXCTpX5xd6CP3"
-    headers = { # optional parameter to request.get()
-        "Authorization": f"Bearer {token}",
-    }
-
-    # API call
-    response = requests.get(api_url, headers=headers, timeout=5)
-    response.raise_for_status() # raise error is status code != 200
-
-    products = response.json()["data"]
-
-    return render_template("index.html", products=products, username=session.get("username"))
-
 
 if __name__ == "__main__":
     app.run()

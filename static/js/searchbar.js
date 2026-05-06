@@ -63,18 +63,18 @@ function createArticleElement(product) {
     let article = document.createElement("article");
 
     let a = document.createElement("a");
-    a.href = `/product_page?id=${product.id}`;
+    a.href = `/product_page?id=${product.product_id}`;
 
     let img = document.createElement("img");
-    img.src = `${product.image}`;
+    img.src = `${product.image_url}`;
 
     let h3 = document.createElement("h3");
-    h3.innerText = `${product.name}`;
+    h3.innerText = `${product.product_name}`;
 
     let p = document.createElement("p");
-    let priceText = product.current_price;
-    //.map(p => `${p.price} kr hos ${p.store_name}`) // loops over each item and converts it into a string
-    //.join(", "); // combines all strings into a line separated by commas
+    let priceText = product.prices_at_store
+        .map(p => `${p.price} kr hos ${p.store_name}`) // loops over each item and converts it into a string
+        .join(", "); // combines all strings into a line separated by commas
     p.innerHTML = priceText;
 
     a.appendChild(img);
